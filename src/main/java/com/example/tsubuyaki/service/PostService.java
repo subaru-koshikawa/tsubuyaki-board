@@ -2,6 +2,7 @@ package com.example.tsubuyaki.service;
 
 import com.example.tsubuyaki.domain.Post;
 import com.example.tsubuyaki.repository.PostRepository;
+import java.time.Instant;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,5 +19,10 @@ public class PostService {
 
     public List<Post> latest() {
         return repository.findTop50ByOrderByCreatedAtDesc();
+    }
+
+    @Transactional
+    public Post create(String author, String body) {
+        return repository.save(new Post(author, body, Instant.now()));
     }
 }
