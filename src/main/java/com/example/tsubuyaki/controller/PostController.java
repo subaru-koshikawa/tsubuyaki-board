@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 @Controller
@@ -28,8 +29,10 @@ public class PostController {
     }
 
     @GetMapping({ "/", "/posts" })
-    public String list(Model model) {
-        model.addAttribute("posts", postService.latest());
+    public String list(@RequestParam(value = "q", required = false) String q, Model model) {
+        String keyword = q == null ? "" : q.trim();
+        model.addAttribute("q", q == null ? "" : q);
+        model.addAttribute("posts", keyword.isEmpty() ? postService.latest() : postService.searchByBody(keyword));
         return "posts/list";
     }
 
