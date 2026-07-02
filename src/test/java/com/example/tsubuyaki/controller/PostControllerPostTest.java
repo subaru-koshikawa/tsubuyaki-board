@@ -31,11 +31,25 @@ class PostControllerPostTest {
     void createPost_validInput_redirectsToList() throws Exception {
         mockMvc.perform(post("/posts")
                         .param("author", "alice")
-                        .param("body", "hello"))
+                        .param("body", "hello")
+                        .param("avatarColor", "blue"))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/posts"));
 
-        then(postService).should().create("alice", "hello");
+        then(postService).should().create("alice", "hello", "blue");
+    }
+
+    @Test
+    @DisplayName("投稿登録_不正なアバター色_デフォルト色で保存する")
+    void createPost_invalidAvatarColor_savesDefaultColor() throws Exception {
+        mockMvc.perform(post("/posts")
+                        .param("author", "alice")
+                        .param("body", "hello")
+                        .param("avatarColor", "red;background:url(javascript:alert(1))"))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/posts"));
+
+        then(postService).should().create("alice", "hello", "gray");
     }
 
     @Test
@@ -48,7 +62,7 @@ class PostControllerPostTest {
                 .andExpect(view().name("posts/form"))
                 .andExpect(model().attributeHasFieldErrors("postForm", "author"));
 
-        then(postService).should(never()).create(anyString(), anyString());
+        then(postService).should(never()).create(anyString(), anyString(), anyString());
     }
 
     @Test
@@ -61,7 +75,7 @@ class PostControllerPostTest {
                 .andExpect(view().name("posts/form"))
                 .andExpect(model().attributeHasFieldErrors("postForm", "body"));
 
-        then(postService).should(never()).create(anyString(), anyString());
+        then(postService).should(never()).create(anyString(), anyString(), anyString());
     }
 
     @Test
@@ -76,7 +90,7 @@ class PostControllerPostTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/posts"));
 
-        then(postService).should().create(author, body);
+        then(postService).should().create(author, body, "gray");
     }
 
     @Test
@@ -89,7 +103,7 @@ class PostControllerPostTest {
                 .andExpect(view().name("posts/form"))
                 .andExpect(model().attributeHasFieldErrors("postForm", "author"));
 
-        then(postService).should(never()).create(anyString(), anyString());
+        then(postService).should(never()).create(anyString(), anyString(), anyString());
     }
 
     @Test
@@ -102,6 +116,6 @@ class PostControllerPostTest {
                 .andExpect(view().name("posts/form"))
                 .andExpect(model().attributeHasFieldErrors("postForm", "body"));
 
-        then(postService).should(never()).create(anyString(), anyString());
+        then(postService).should(never()).create(anyString(), anyString(), anyString());
     }
 }

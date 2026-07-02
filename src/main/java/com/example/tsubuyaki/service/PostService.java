@@ -35,8 +35,8 @@ public class PostService {
     }
 
     @Transactional
-    public Post create(String author, String body) {
-        return repository.save(new Post(author, body, Instant.now()));
+    public Post create(String author, String body, String avatarColor) {
+        return repository.save(new Post(author, body, Instant.now(), avatarColor));
     }
 
     public long likeCount(Long postId) {

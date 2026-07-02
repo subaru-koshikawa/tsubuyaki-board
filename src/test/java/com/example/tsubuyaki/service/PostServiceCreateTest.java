@@ -27,14 +27,15 @@ class PostServiceCreateTest {
     private PostService postService;
 
     @Test
-    @DisplayName("Service_create_投稿者と本文_現在時刻付きの投稿を保存する")
-    void create_savesPostWithCurrentTimestamp() {
-        postService.create("alice", "hello");
+    @DisplayName("Service_create_投稿者と本文とアバター色_現在時刻付きの投稿を保存する")
+    void create_savesPostWithAvatarColorAndCurrentTimestamp() {
+        postService.create("alice", "hello", "blue");
 
         ArgumentCaptor<Post> captor = ArgumentCaptor.forClass(Post.class);
         then(postRepository).should().save(captor.capture());
         assertThat(captor.getValue().getAuthor()).isEqualTo("alice");
         assertThat(captor.getValue().getBody()).isEqualTo("hello");
+        assertThat(captor.getValue().getAvatarColor()).isEqualTo("blue");
         assertThat(captor.getValue().getCreatedAt()).isNotNull();
     }
 }

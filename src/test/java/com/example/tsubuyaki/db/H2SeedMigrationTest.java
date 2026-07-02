@@ -28,8 +28,10 @@ class H2SeedMigrationTest {
                 .migrate();
 
         try (Connection connection = DriverManager.getConnection(url, "sa", "");
-             Statement statement = connection.createStatement()) {
+            Statement statement = connection.createStatement()) {
             assertThat(singleLong(statement, "SELECT COUNT(*) FROM posts")).isEqualTo(10);
+            assertThat(singleLong(statement, "SELECT COUNT(*) FROM posts WHERE avatar_color IS NOT NULL")).isEqualTo(10);
+            assertThat(singleString(statement, "SELECT avatar_color FROM posts WHERE id = 2")).isEqualTo("blue");
             assertThat(singleLong(statement, "SELECT NEXT VALUE FOR posts_seq")).isEqualTo(11);
         }
     }
@@ -38,6 +40,13 @@ class H2SeedMigrationTest {
         try (ResultSet resultSet = statement.executeQuery(sql)) {
             assertThat(resultSet.next()).isTrue();
             return resultSet.getLong(1);
+        }
+    }
+
+    private static String singleString(Statement statement, String sql) throws SQLException {
+        try (ResultSet resultSet = statement.executeQuery(sql)) {
+            assertThat(resultSet.next()).isTrue();
+            return resultSet.getString(1);
         }
     }
 }

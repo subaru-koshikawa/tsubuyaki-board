@@ -34,7 +34,7 @@ class PostControllerListTest {
     @Test
     @DisplayName("投稿一覧_投稿があるとき_詳細画面へのリンクを表示する")
     void list_existingPosts_rendersDetailLink() throws Exception {
-        Post post = new Post("alice", "hello", Instant.parse("2026-07-02T01:00:00Z"));
+        Post post = new Post("alice", "hello", Instant.parse("2026-07-02T01:00:00Z"), "blue");
         ReflectionTestUtils.setField(post, "id", 1L);
         given(postService.latest()).willReturn(List.of(post));
 
@@ -42,6 +42,8 @@ class PostControllerListTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("posts/list"))
                 .andExpect(content().string(containsString("href=\"/posts/1\"")))
+                .andExpect(content().string(containsString("class=\"post__avatar\"")))
+                .andExpect(content().string(containsString("background-color: blue")))
                 .andExpect(content().string(containsString("詳細")));
     }
 

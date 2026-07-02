@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -29,7 +31,7 @@ class PostControllerDetailTest {
     @Test
     @DisplayName("投稿詳細_存在するID_GET_posts_id_detailビューに投稿を渡す")
     void detail_existingPost_rendersDetailView() throws Exception {
-        Post post = new Post("alice", "hello", Instant.parse("2026-07-02T01:00:00Z"));
+        Post post = new Post("alice", "hello", Instant.parse("2026-07-02T01:00:00Z"), "green");
         given(postService.findById(1L)).willReturn(Optional.of(post));
         given(postService.likeCount(1L)).willReturn(3L);
 
@@ -37,7 +39,9 @@ class PostControllerDetailTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("posts/detail"))
                 .andExpect(model().attribute("post", post))
-                .andExpect(model().attribute("likeCount", 3L));
+                .andExpect(model().attribute("likeCount", 3L))
+                .andExpect(content().string(containsString("class=\"post__avatar\"")))
+                .andExpect(content().string(containsString("background-color: green")));
     }
 
     @Test

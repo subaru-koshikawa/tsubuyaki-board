@@ -1,5 +1,6 @@
 package com.example.tsubuyaki.web.dto;
 
+import com.example.tsubuyaki.domain.AvatarColor;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -12,6 +13,8 @@ public class PostForm {
     @NotBlank(message = "本文を入力してください")
     @Size(min = 1, max = 280, message = "本文は 1 文字以上 280 文字以内で入力してください")
     private String body;
+
+    private String avatarColor = AvatarColor.DEFAULT;
 
     public PostForm() {
     }
@@ -30,5 +33,17 @@ public class PostForm {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public String getAvatarColor() {
+        return avatarColor;
+    }
+
+    public void setAvatarColor(String avatarColor) {
+        this.avatarColor = avatarColor;
+    }
+
+    public String getSafeAvatarColor() {
+        return AvatarColor.safe(avatarColor);
     }
 }

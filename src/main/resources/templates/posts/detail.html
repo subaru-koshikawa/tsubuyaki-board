@@ -15,6 +15,9 @@
 
     <article class="post">
         <header>
+            <span class="post__avatar"
+                  th:style="'display: inline-flex; align-items: center; justify-content: center; width: 1.75rem; height: 1.75rem; border-radius: 50%; margin-right: 0.5rem; color: white; font-size: 0.8rem; font-weight: 700; vertical-align: middle; background-color: ' + ${post.avatarColor}"
+                  th:text="${#strings.substring(post.author, 0, 1)}">A</span>
             <span class="post__author" th:text="${post.author}">投稿者</span>
             <span class="post__created-at"
                   th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">2026-05-23 09:00</span>

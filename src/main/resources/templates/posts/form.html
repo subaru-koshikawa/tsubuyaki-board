@@ -24,6 +24,16 @@
             <textarea id="body" th:field="*{body}" rows="4"></textarea>
             <p class="error" th:if="${#fields.hasErrors('body')}" th:errors="*{body}">エラー</p>
         </div>
+        <div>
+            <label for="avatarColor">アバター色</label>
+            <select id="avatarColor" th:field="*{avatarColor}">
+                <option value="gray">Gray</option>
+                <option value="red">Red</option>
+                <option value="blue">Blue</option>
+                <option value="green">Green</option>
+                <option value="yellow">Yellow</option>
+            </select>
+        </div>
         <button type="submit">投稿</button>
     </form>
 </main>
