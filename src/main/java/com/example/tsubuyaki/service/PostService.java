@@ -4,6 +4,7 @@ import com.example.tsubuyaki.domain.Post;
 import com.example.tsubuyaki.repository.PostRepository;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,10 @@ public class PostService {
 
     public List<Post> latest() {
         return repository.findTop50ByOrderByCreatedAtDesc();
+    }
+
+    public Optional<Post> findById(Long id) {
+        return repository.findById(id);
     }
 
     @Transactional
