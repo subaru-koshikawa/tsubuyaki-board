@@ -31,11 +31,13 @@ class PostControllerDetailTest {
     void detail_existingPost_rendersDetailView() throws Exception {
         Post post = new Post("alice", "hello", Instant.parse("2026-07-02T01:00:00Z"));
         given(postService.findById(1L)).willReturn(Optional.of(post));
+        given(postService.likeCount(1L)).willReturn(3L);
 
         mockMvc.perform(get("/posts/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("posts/detail"))
-                .andExpect(model().attribute("post", post));
+                .andExpect(model().attribute("post", post))
+                .andExpect(model().attribute("likeCount", 3L));
     }
 
     @Test

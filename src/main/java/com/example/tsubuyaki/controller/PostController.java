@@ -2,7 +2,12 @@ package com.example.tsubuyaki.controller;
 
 import com.example.tsubuyaki.service.PostService;
 import com.example.tsubuyaki.web.dto.PostForm;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,6 +52,28 @@ public class PostController {
     public String detail(@PathVariable Long id, Model model) {
         model.addAttribute("post", postService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
+        model.addAttribute("likeCount", postService.likeCount(id));
         return "posts/detail";
+    }
+
+    @PostMapping("/posts/{id}/likes")
+    public String toggleLike(@PathVariable Long id, HttpServletRequest request) {
+        postService.toggleLike(id, clientHash(request));
+        return "redirect:/posts/" + id;
+    }
+
+    private String clientHash(HttpServletRequest request) {
+        String source = nullToEmpty(request.getRemoteAddr()) + nullToEmpty(request.getHeader("User-Agent"));
+        try {
+            byte[] digest = MessageDigest.getInstance("SHA-256")
+                    .digest(source.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(digest).substring(0, 8);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 algorithm is not available", e);
+        }
+    }
+
+    private String nullToEmpty(String value) {
+        return value == null ? "" : value;
     }
 }

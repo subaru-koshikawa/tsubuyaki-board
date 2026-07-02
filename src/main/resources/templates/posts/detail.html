@@ -21,6 +21,13 @@
         </header>
         <p class="post__body" th:text="${post.body}">本文</p>
     </article>
+
+    <section class="post-like" aria-label="いいね">
+        <p>いいね数: <span th:text="${likeCount}">0</span></p>
+        <form th:action="@{/posts/{id}/likes(id=${post.id})}" method="post">
+            <button type="submit">Like</button>
+        </form>
+    </section>
 </main>
 </body>
 </html>
